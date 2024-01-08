@@ -16,9 +16,9 @@ public:
     int L, R;
     void solve(TreeNode* root){
         if(root==NULL) return;
-        solve(root->left);
+        if(root->val>L) solve(root->left);
         if(root->val>=L && root->val<=R) sum+=root->val;
-        solve(root->right);
+        if(root->val<R) solve(root->right);
     }
 
     int rangeSumBST(TreeNode* root, int low, int high) {
