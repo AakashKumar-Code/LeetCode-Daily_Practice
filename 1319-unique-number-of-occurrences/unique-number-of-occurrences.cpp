@@ -7,7 +7,6 @@ public:
         for(int i=0; i<n; i++){
             mp1[arr[i]]++;
         }
-
         for(auto &it:mp1){
             if(mp2.find(it.second)!=mp2.end()) return 0;
             mp2.insert(it.second);
