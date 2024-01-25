@@ -7,10 +7,11 @@ public:
             neg=1;
             temp=abs(temp);
         }
-        long long ans=0;
+        int ans=0;
         while(temp){
+            if(ans>INT_MAX/10) return 0;
             ans=(ans*10)+(temp%10);
-            if(ans>INT_MAX) return 0;
+            //if(ans>INT_MAX) return 0;
             temp/=10;
         }
         if(neg) ans*=-1;
