@@ -19,6 +19,7 @@ public:
         for(int i=1; i*i<=n; i++){
             temp.push_back(i*i);
         }
+        reverse(temp.begin(), temp.end());
         int sz=temp.size();
         vector<vector<int>>dp(sz+1, vector<int>(n+1, -1));
         return solve(0, sz, n, temp, dp);
