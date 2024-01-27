@@ -4,19 +4,19 @@ public:
     int mod=1e9+7;
 
     int kInversePairs(int n, int k) {
-        vector<vector<int>>dp(n+1, vector<int>(k+1, 0));
-        for(int i=0; i<=n; i++){
-            dp[i][0]=1;
-        }
+        if(k==0) return 1;
+        vector<int>prev(k+1, 0), curi(k+1, 0);
+        prev[0]=1;
+        curi[0]=1;
         for(int i=1; i<=n; i++){
+            long long sum=1;
             for(int j=1; j<=k; j++){
-                int ans=0;
-                for(int inv=0; inv<=min(i-1, j); inv++){
-                    ans=(ans+dp[i-1][j-inv])%mod;
-                }
-                dp[i][j]=ans;
+                sum+=prev[j];
+                if(j>=i) sum-=prev[j-i];
+                curi[j]=sum%mod;
             }
+            prev=curi;
         }
-        return dp[n][k];
+        return prev[k];
     }
 };
