@@ -3,7 +3,6 @@ public:
 
     int minimumTotal(vector<vector<int>>& triangle) {
         int n=triangle.size();
-        vector<vector<int>>dp(n+1, vector<int>(n+1, 0));
         vector<int>prev(n+1, 0), curi(n+1, 0);
         for(int j=0; j<n; j++){
             prev[j]=triangle[n-1][j];
