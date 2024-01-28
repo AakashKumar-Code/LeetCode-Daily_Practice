@@ -1,20 +1,21 @@
 class Solution {
 public:
-    int minFallingPathSumHelper(vector<vector<int>>& matrix, int r, int c, vector<vector<int>>& dp){
-        if(r == 0 and c < matrix[0].size() and c >= 0) return matrix[r][c]; 
-        if(c >= matrix[0].size() or c < 0) return INT_MAX;
-        
-        if(dp[r][c] != INT_MAX) return dp[r][c];
-        return dp[r][c] = matrix[r][c] + min(min(minFallingPathSumHelper(matrix, r-1, c+1, dp), minFallingPathSumHelper(matrix, r-1, c, dp)), minFallingPathSumHelper(matrix, r-1, c-1, dp));
-        
-    }
     int minFallingPathSum(vector<vector<int>>& matrix) {
-        int rows = matrix.size(), cols = matrix[0].size();
-        vector<vector<int>> dp(rows+1, vector<int>(cols+1, INT_MAX));
-        int ans = INT_MAX;
-        for(int c=0; c < cols; c++){
-            ans = min(ans, minFallingPathSumHelper(matrix, rows-1, c, dp));
+        int n=matrix.size();
+        vector<vector<int>>dp(n, vector<int>(n, 0));
+        for(int j=0; j<n; j++){
+            dp[0][j]=matrix[0][j];
         }
-        return ans;
+        for(int i=1; i<n; i++){
+            for(int j=0; j<n; j++){
+                int ldg=1e9, rdg=1e9;
+                int up=matrix[i][j]+dp[i-1][j];
+                if(j-1>=0) ldg=matrix[i][j]+dp[i-1][j-1];
+                if(j+1<n) rdg=matrix[i][j]+dp[i-1][j+1];
+                dp[i][j]=min({up, ldg, rdg});
+            }
+        }
+        int mini = *min_element(dp[n - 1].begin(), dp[n - 1].end());
+        return mini;
     }
 };
