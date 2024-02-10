@@ -1,23 +1,23 @@
 class Solution {
 public:
-
-    int n;
-    bool solve(int i, int j, string &s, vector<vector<int>>&dp){
-        if(i>j) return 1;
-        if(dp[i][j]!=-1) return dp[i][j];
-        if(s[i]==s[j]){
-            return dp[i][j]=solve(i+1, j-1, s, dp);
-        }
-        return 0;
-    }
-
     int countSubstrings(string s) {
-        n=s.length();
-        vector<vector<int>>dp(n, vector<int>(n, -1));
+        int n=s.length();
+
         int cnt=0;
-        for(int i=0; i<n; i++){
-            for(int j=i; j<n; j++){
-                if(solve(i, j, s, dp)==1) cnt++;
+        vector<vector<bool>>dp(n, vector<bool>(n, 0));
+
+        for(int L=1; L<=n; L++){
+            for(int i=0; i+L-1<n; i++){
+                int j=i+L-1;
+                if(i==j){
+                    dp[i][j]=1;
+                }else if(j==i+1){
+                    dp[i][j]=(s[i]==s[j]);
+                }else{
+                    dp[i][j]=(s[i]==s[j] && dp[i+1][j-1]==1);
+                }
+
+                if(dp[i][j]==1) cnt++;
             }
         }
         return cnt;
