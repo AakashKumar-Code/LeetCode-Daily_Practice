@@ -2,20 +2,22 @@ class Solution {
 public:
 
     int n;
-    bool solve(int i, int j, string &s){
+    bool solve(int i, int j, string &s, vector<vector<int>>&dp){
         if(i>j) return 1;
+        if(dp[i][j]!=-1) return dp[i][j];
         if(s[i]==s[j]){
-            return solve(i+1, j-1, s);
+            return dp[i][j]=solve(i+1, j-1, s, dp);
         }
         return 0;
     }
 
     int countSubstrings(string s) {
         n=s.length();
+        vector<vector<int>>dp(n, vector<int>(n, -1));
         int cnt=0;
         for(int i=0; i<n; i++){
             for(int j=i; j<n; j++){
-                if(solve(i, j, s)==1) cnt++;
+                if(solve(i, j, s, dp)==1) cnt++;
             }
         }
         return cnt;
