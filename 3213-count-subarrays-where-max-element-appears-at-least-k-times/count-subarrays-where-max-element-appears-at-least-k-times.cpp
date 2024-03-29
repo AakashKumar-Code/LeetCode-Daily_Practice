@@ -9,17 +9,14 @@ public:
         int cnt=0;
         long long ans=0;
 
-        int i=0, j=0;
+        vector<int>temp;
 
-        for(; j<n; j++){
-            if(nums[j]==maxi){
-                cnt++;
-            }
-            for(; i<n && cnt>=k; i++){
-                ans+=(n-j);
-                if(nums[i]==maxi){
-                    cnt--;
-                }
+        for(int i=0; i<n; i++){
+            if(nums[i]==maxi) temp.push_back(i);
+            int size=temp.size();
+            if(size>=k){
+                int last_i=temp[size-k];
+                ans+=last_i+1;
             }
         }
 
