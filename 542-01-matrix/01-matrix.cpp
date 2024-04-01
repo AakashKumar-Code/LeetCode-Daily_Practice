@@ -11,7 +11,10 @@ public:
 
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
-                if(mat[i][j]==0) q.push({{i, j}, 0});
+                if(mat[i][j]==0){
+                    q.push({{i, j}, 0});
+                    vis[i][j]=1;
+                }
             }
         }
 
@@ -24,13 +27,14 @@ public:
             int d=q.front().second;
             q.pop();
 
-            vis[r][c]=1;
-            dist[r][c]=min(dist[r][c], d);
+            
+            dist[r][c]=d;
 
             for(int i=0; i<4; i++){
                 int nr=r+dr[i];
                 int nc=c+dc[i];
                 if(nr>=0 && nr<n && nc>=0 && nc<m && !vis[nr][nc]){
+                    vis[nr][nc]=1;
                     q.push({{nr, nc}, d+1});
                 }
             }
