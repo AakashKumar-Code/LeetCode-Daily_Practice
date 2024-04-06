@@ -2,23 +2,27 @@ class Solution {
 public:
     string minRemoveToMakeValid(string s) {
         int n=s.length();
-        stack<int>st;
-        unordered_set<int>t;
+        int open=0, close=0;
+        unordered_set<int>st;
+
         for(int i=0; i<n; i++){
             if(s[i]=='('){
-                st.push(i);
+                open++;
             }else if(s[i]==')'){
-                if(st.empty()) t.insert(i);
-                else st.pop();
+                if(open>0) open--;
+                else st.insert(i);
             }
-        }
-        while(!st.empty()){
-            t.insert(st.top());
-            st.pop();
+
+            if(s[n-i-1]==')'){
+                close++;
+            }else if(s[n-i-1]=='('){
+                if(close>0) close--;
+                else st.insert(n-i-1);
+            }
         }
         string ans="";
         for(int i=0; i<n; i++){
-            if(t.find(i)==t.end()) ans+=s[i];
+            if(st.find(i)==st.end()) ans+=s[i];
         }
         return ans;
     }
