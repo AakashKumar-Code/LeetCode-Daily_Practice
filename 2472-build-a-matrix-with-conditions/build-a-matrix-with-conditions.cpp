@@ -1,48 +1,46 @@
 class Solution {
-public:
-
-    void dfs(int node, unordered_map<int, vector<int>>&adj, int &n, vector<int>&vis, stack<int>&st, bool &cycle){
-        vis[node]=1;
-
-        for(int &it:adj[node]){
-            if(vis[it]==0){
-                dfs(it, adj, n, vis, st, cycle);
-            }else if(vis[it]==1){
-                cycle=1;
-                return;
-            }
-        }
-
-        vis[node]=2;
-        st.push(node);
-    }
-
+public:    
     vector<int> topoSort(vector<vector<int>>&edges, int &n){
         unordered_map<int, vector<int>>adj;
+        vector<int>indegree(n+1, 0);
         for(auto &it:edges){
             int u=it[0];
             int v=it[1];
+            indegree[v]++;
             adj[u].push_back(v);
         }
 
-        vector<int>vis(n+1, 0);
+        int cnt=0;
 
-        stack<int>st;
-        bool cycle=0;
-
+        queue<int>q;
         for(int i=1; i<=n; i++){
-            if(vis[i]==0){
-                dfs(i, adj, n, vis, st, cycle);
-                if(cycle) return {};
+            if(indegree[i]==0){
+                q.push(i);
+                cnt++;
             }
         }
-        vector<int>order;
 
-        while(!st.empty()){
-            order.push_back(st.top());
-            st.pop();
+        vector<int>ans;
+
+        while(!q.empty()){
+            int node=q.front();
+            q.pop();
+            ans.push_back(node);
+            
+
+            for(int &it:adj[node]){
+                indegree[it]--;
+                if(indegree[it]==0){
+                    q.push(it);
+                    cnt++;
+                }
+            }
         }
-        return order;
+
+        if(cnt==n) return ans;
+        else return {};
+
+        
     }
 
     vector<vector<int>> buildMatrix(int k, vector<vector<int>>& rowConditions, 
