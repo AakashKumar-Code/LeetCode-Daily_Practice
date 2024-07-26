@@ -1,58 +1,47 @@
 class Solution {
 public:
 
-    int dij(int src, int &n, vector<vector<pair<int, int>>>& adj, int &k){
-        int cnt=0;
-        priority_queue<pair<int, int>, vector<pair< int, int>>, greater<pair<int, int>>>pq;
-        pq.push({0, src});
-        vector<int>dist(n, 1e9);
+    void bellman_ford(int src, int &n, vector<vector<int>>&e, vector<int>&dist){
         dist[src]=0;
 
-        while(!pq.empty()){
-            int node=pq.top().second;
-            int wt=pq.top().first;
-            pq.pop();
+        for(int k=1; k<=n-1; k++){
+            for(auto &it:e){
+                int u=it[0];
+                int v=it[1];
+                int wt=it[2];
 
-            for(auto &it:adj[node]){
-                int adjN=it.first;
-                int adjW=it.second;
-                if(wt+adjW<dist[adjN]){
-                    dist[adjN]=wt+adjW;
-                    pq.push({dist[adjN], adjN});
+                if(dist[u]!=INT_MAX && dist[u]+wt<dist[v]){
+                    dist[v]=dist[u]+wt;
+                }
+                if(dist[v]!=INT_MAX && dist[v]+wt<dist[u]){
+                    dist[u]=dist[v]+wt;
                 }
             }
         }
-
-        for (int i = 0; i < n; ++i) {
-            if (i != src && dist[i] <= k) {
-                cnt++;
-            }
-        }
-
-        return cnt;
     }
 
     int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
-
-        vector<vector<pair<int, int>>> adj(n);
-
-        for(auto &it:edges){
-            int u=it[0];
-            int v=it[1];
-            int w=it[2];
-            adj[u].push_back({v, w});
-            adj[v].push_back({u, w});
-        }
-
-        int mini=1e9, ans=-1;
+        vector<vector<int>>mat(n, vector<int>(n, INT_MAX));
 
         for(int i=0; i<n; i++){
-            int tmp=dij(i, n, adj, distanceThreshold);
-            if(tmp<=mini){
-                mini=tmp;
+            bellman_ford(i, n, edges, mat[i]);
+        }
+
+        int ans=-1, mini=INT_MAX;
+
+        for(int i=0; i<n; i++){
+            int cnt=0;
+            for(int j=0; j<n; j++){
+                if(i!=j && mat[i][j]<=distanceThreshold){
+                    cnt++;
+                }
+            }
+            if(mini>=cnt){
+                mini=cnt;
                 ans=i;
             }
         }
-        return ans;           
+        return ans;
+
     }
 };
