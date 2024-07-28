@@ -12,11 +12,11 @@ public:
         vector<int>min1(n+1, 1e9), min2(n+1, 1e9);
         min1[1]=0;
 
-        priority_queue< pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>> >pq;
+        queue< pair<int, int> >pq;
         pq.push({0, 1});
 
         while(!pq.empty()){
-            auto it=pq.top();
+            auto it=pq.front();
             pq.pop();
             int u=it.second;
             int timeElapsed=it.first;
