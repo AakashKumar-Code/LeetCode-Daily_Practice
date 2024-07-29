@@ -1,29 +1,52 @@
 class Solution {
 public:
-    int numTeams(vector<int>& rating) {
-        int n=rating.size();
-        int ans=0;
-
-        for(int j=1; j<n-1; j++){
-            int cnt_i1=0;
-            int cnt_i2=0;
-            for(int i=0; i<j; i++){
-                if(rating[i]<rating[j]) cnt_i1++;
-                if(rating[i]>rating[j]) cnt_i2++;
-
-            }
-            int cnt_k1=0;
-            int cnt_k2=0;
-            for(int k=j+1; k<n; k++){
-                if(rating[k]>rating[j]) cnt_k1++;
-                if(rating[k]<rating[j]) cnt_k2++;
-
-            }
-            ans+=(cnt_i1*cnt_k1);
-            ans+=(cnt_i2*cnt_k2);
-
+int dp[1002][1002][4];
+    int cal(int i , int prev ,int taken , vector<int> &arr)
+    {
+        if(taken > 3)   return 0;
+        if(i == arr.size()) 
+        {
+            return taken == 3 ?1:0;
         }
-        return ans;
-        
+        if(dp[i][prev][taken]!=-1)  return dp[i][prev][taken];
+
+        int t = 0;
+
+        if(prev == arr.size()+1 || arr[prev] < arr[i])
+        {
+            t = cal(i+1 , i , taken +1 , arr);
+        }
+        int nt = cal(i+1 , prev , taken ,arr);
+
+        return dp[i][prev][taken] = t + nt;
+    }
+    int cal2(int i , int prev ,int taken , vector<int> &arr)
+    {
+        if(taken > 3)   return 0;
+        if(i == arr.size()) 
+        {
+            return taken == 3 ?1:0;
+        }
+        if(dp[i][prev][taken]!=-1)  return dp[i][prev][taken];
+
+        int t = 0;
+
+        if(prev == arr.size()+1 || arr[prev] > arr[i])
+        {
+            t = cal2(i+1 , i , taken +1 , arr);
+        }
+        int nt = cal2(i+1 , prev , taken ,arr);
+
+        return dp[i][prev][taken] = t + nt;
+    }
+
+
+    int numTeams(vector<int>& arr) {
+            int n = arr.size();
+            memset(dp , -1 ,sizeof(dp));
+            int a = cal(0 , n+1 , 0 , arr);
+            memset(dp , -1 ,sizeof(dp));
+            int b =cal2(0 , n+1 , 0 ,arr);
+            return a+b;
     }
 };
