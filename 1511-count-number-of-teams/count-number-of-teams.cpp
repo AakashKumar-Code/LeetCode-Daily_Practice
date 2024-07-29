@@ -1,52 +1,45 @@
 class Solution {
 public:
-int dp[1002][1002][4];
-    int cal(int i , int prev ,int taken , vector<int> &arr)
-    {
-        if(taken > 3)   return 0;
-        if(i == arr.size()) 
-        {
-            return taken == 3 ?1:0;
+    int dp[1002][1002][4];
+    int lis(int i,int n, int prev, int cnt, vector<int>&arr){
+        if(cnt>3) return 0;
+        if (i == n) {
+        return cnt == 3 ? 1 : 0;
         }
-        if(dp[i][prev][taken]!=-1)  return dp[i][prev][taken];
+        if(prev!=-1 && dp[i][prev][cnt]!=-1) return dp[i][prev][cnt];
+        int take=0, ntake=0;
 
-        int t = 0;
-
-        if(prev == arr.size()+1 || arr[prev] < arr[i])
-        {
-            t = cal(i+1 , i , taken +1 , arr);
+        if(prev==-1 || (prev!=-1 && arr[prev]<arr[i])){
+            take+=lis(i+1, n, i, cnt+1, arr);
         }
-        int nt = cal(i+1 , prev , taken ,arr);
-
-        return dp[i][prev][taken] = t + nt;
-    }
-    int cal2(int i , int prev ,int taken , vector<int> &arr)
-    {
-        if(taken > 3)   return 0;
-        if(i == arr.size()) 
-        {
-            return taken == 3 ?1:0;
-        }
-        if(dp[i][prev][taken]!=-1)  return dp[i][prev][taken];
-
-        int t = 0;
-
-        if(prev == arr.size()+1 || arr[prev] > arr[i])
-        {
-            t = cal2(i+1 , i , taken +1 , arr);
-        }
-        int nt = cal2(i+1 , prev , taken ,arr);
-
-        return dp[i][prev][taken] = t + nt;
+        ntake=lis(i+1, n, prev, cnt, arr);
+        if(prev!=-1) dp[i][prev][cnt]=take+ntake;    
+        return take+ntake; 
     }
 
+    int lds(int i,int n, int prev, int cnt, vector<int>&arr){
+        if(cnt>3) return 0;
+        if (i == n) {
+        return cnt == 3 ? 1 : 0;
+        }
+        if(prev!=-1 && dp[i][prev][cnt]!=-1) return dp[i][prev][cnt];
 
-    int numTeams(vector<int>& arr) {
-            int n = arr.size();
-            memset(dp , -1 ,sizeof(dp));
-            int a = cal(0 , n+1 , 0 , arr);
-            memset(dp , -1 ,sizeof(dp));
-            int b =cal2(0 , n+1 , 0 ,arr);
-            return a+b;
+        int take=0, ntake=0;
+
+        if(prev==-1 || (prev!=-1 && arr[prev]>arr[i])){
+            take=lds(i+1, n, i, cnt+1, arr);
+        }
+        ntake=lds(i+1, n, prev, cnt, arr);
+        if(prev!=-1) dp[i][prev][cnt]=take+ntake; 
+        return take+ntake;     
+    }
+
+    int numTeams(vector<int>& rating) {
+        int n=rating.size();
+        memset(dp , -1 ,sizeof(dp));
+        int ans1=lis(0, n, -1, 0, rating);
+        memset(dp , -1 ,sizeof(dp));
+        int ans2=lds(0, n, -1, 0, rating);
+        return ans1+ans2;        
     }
 };
