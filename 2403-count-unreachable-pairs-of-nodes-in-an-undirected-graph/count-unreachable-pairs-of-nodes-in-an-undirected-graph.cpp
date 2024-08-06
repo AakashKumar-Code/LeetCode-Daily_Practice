@@ -1,52 +1,40 @@
 class Solution {
 public:
 
-    int find(int x, vector<int>&par){
-        if(x==par[x]){
-            return x;
+    void dfs(int node, long long &cnt, unordered_map<int, vector<int>>&adj, vector<bool>&vis){
+        vis[node]=1;
+        for(auto &it:adj[node]){
+            if(!vis[it]){
+                cnt++;
+                dfs(it, cnt, adj, vis);
+            }
         }
-        return par[x]=find(par[x], par);
-    }
-
-    void Union(int x, int y, vector<int>&par, vector<int>&rank){
-        int par_x=find(x, par);
-        int par_y=find(y, par);
-
-        if(par_x==par_y){
-            return;
-        }
-
-        if(rank[par_x]>rank[par_y]){
-            par[par_y]=par_x;
-        }else if(rank[par_x]<rank[par_y]){
-            par[par_x]=par_y;
-        }else{
-            par[par_x]=par_y;
-            rank[par_y]++;
-        }
+        
     }
 
     long long countPairs(int n, vector<vector<int>>& edges) {
-        int e=edges.size();
-
-        vector<int>par(n), rank(n, 0);
-        for(int i=0; i<n; i++) par[i]=i;
+        unordered_map<int, vector<int>>adj;
 
         for(auto &it:edges){
-            Union(it[0], it[1], par, rank);
+            int u=it[0];
+            int v=it[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
         }
-        
+
+        long long rem=n;
         long long ans=0;
 
-        unordered_map<int, long long>mpp;
+        vector<bool>vis(n, 0);
 
         for(int i=0; i<n; i++){
-            mpp[find(i, par)]++;
+            if(!vis[i]){
+                long long cnt=1;
+                dfs(i, cnt, adj, vis);
+                ans += (cnt) * (rem-cnt);
+                rem -= cnt;
+            }
         }
-
-        for(int i=0; i<n; i++){
-            ans=(ans+(n-mpp[find(i, par)]));
-        }
-        return ans/2;       
+        return ans;        
     }
 };
