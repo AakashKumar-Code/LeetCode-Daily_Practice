@@ -1,25 +1,34 @@
 class Solution {
 public:
-    int smallestDistancePair(vector<int>& nums, int k) {
-        int n=nums.size();
-        int maxi=-1e9;
-        for(int i=0; i<n; i++){
-            maxi=max(maxi, nums[i]);
+    int n;
+
+    int solve(int mid, vector<int>&arr){
+        int cnt=0;
+        int i=0, j=0;
+        for(; j<n; j++){
+            for(; i<n && arr[j]-arr[i]>mid; i++){
+
+            }
+            if(i!=j) cnt+=(j-i);
         }
+        return cnt;
+    }
 
-        vector<int>arr(maxi+1, 0);
+    int smallestDistancePair(vector<int>& nums, int k) {
+        n=nums.size();
+        sort(nums.begin(), nums.end());
 
-        for(int i=0; i<n-1; i++){
-            for(int j=i+1; j<n; j++){
-                arr[abs(nums[i]-nums[j])]++;
+        int lo=0, hi=nums[n-1]-nums[0];
+
+        while(lo<=hi){
+            int mid=lo+(hi-lo)/2;
+            int cnt=solve(mid, nums);
+            if (cnt < k) {
+                lo = mid + 1;
+            } else {
+                hi = mid-1; // Try for smaller distances
             }
         }
-
-        for(int i=0; i<maxi+1; i++){
-            k-=arr[i];
-            if(k<=0) return i;
-        }
-        return -1;
-        
+        return lo;        
     }
 };
