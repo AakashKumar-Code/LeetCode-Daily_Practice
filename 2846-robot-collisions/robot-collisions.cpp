@@ -1,44 +1,40 @@
 class Solution {
 public:
-
-    bool static comp(pair<int, int>&a, pair<int, int>&b){
-        return a.second<b.second;
-    }
-
     vector<int> survivedRobotsHealths(vector<int>& positions, vector<int>& healths, string directions) {
         int n=positions.size();
 
-        vector<pair<int, int>>p;
+        vector<pair<int, int>>v;
+
         for(int i=0; i<n; i++){
-            p.push_back({i, positions[i]});
+            v.push_back({positions[i], i});
         }
 
-        sort(p.begin(), p.end(), comp);
+        sort(v.begin(), v.end());
 
         stack<int>st;
-        
 
         for(int i=0; i<n; i++){
-            int idx=p[i].first;
-            while(!st.empty() && directions[st.top()]=='R' && directions[idx]=='L'){
-                int prev=st.top();
-                if(healths[prev]==healths[idx]){
-                    healths[prev]=0;
-                    healths[idx]=0;
+            int x=v[i].second;
+            while(!st.empty() && (directions[x]=='L' && directions[st.top()]=='R')){
+                int y=st.top();
+                if(healths[x]==healths[y]){
+                    healths[x]=0;
+                    healths[y]=0;
                     st.pop();
                     break;
-                }else if(healths[prev]<healths[idx]){
-                    healths[prev]=0;
-                    healths[idx]--;
+                }else if(healths[x]>healths[y]){
+                    healths[x]--;
+                    healths[y]=0;
                     st.pop();
                 }else{
-                    healths[idx]=0;
-                    healths[prev]--;
+                    healths[y]--;
+                    healths[x]=0;
                     break;
                 }
             }
-            if(healths[idx]>0) st.push(idx);
+            if(healths[x]>0) st.push(x);
         }
+
         if(st.empty()) return {};
         else if(st.size()==n) return healths;
 
@@ -52,6 +48,6 @@ public:
             ans[i]=healths[ans[i]];
         }       
         
-        return ans;
+        return ans;      
     }
 };
