@@ -1,23 +1,23 @@
 class TreeAncestor {
 public:
 
-    vector<vector<int>>ancestorTable;
-    int row, col;
+    vector<vector<int>>tab;
+    int r, c;
 
     TreeAncestor(int n, vector<int>& parent) {
-        row=n;
-        col=log2(n)+1;
+        r=n;
+        c=log2(n)+1;
 
-        ancestorTable=vector<vector<int>>(row, vector<int>(col, -1));
+        tab=vector<vector<int>>(r, vector<int>(c, -1));
 
-        for(int i=0; i<n; i++){
-            ancestorTable[i][0]=parent[i];
+        for(int node=0; node<n; node++){
+            tab[node][0]=parent[node];
         }
 
-        for(int j=1; j<col ;j++){
+        for(int j=1; j<c; j++){
             for(int node=0; node<n; node++){
-                if(ancestorTable[node][j-1]>0){
-                    ancestorTable[node][j]=ancestorTable[ancestorTable[node][j-1]][j-1];
+                if(tab[node][j-1]!=-1){
+                    tab[node][j]=tab[tab[node][j-1]][j-1];
                 }
             }
         }
@@ -25,15 +25,16 @@ public:
     }
     
     int getKthAncestor(int node, int k) {
-
-        for(int j=0; j<col; j++){
+        
+        for(int j=0; j<c; j++){
             if(k&(1<<j)){
-                node=ancestorTable[node][j];
+                node=tab[node][j];
                 if(node==-1) return -1;
             }
         }
 
-        return node;        
+        return node;
+        
     }
 };
 
