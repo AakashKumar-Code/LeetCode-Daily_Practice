@@ -11,30 +11,35 @@
 class Solution {
 public:
     vector<int> nodesBetweenCriticalPoints(ListNode* head) {
+        vector<int>tmp;
         ListNode* node=head->next;
-        vector<int>arr;
-        int cnt=2;
-
         ListNode* prev=head;
-        while(node->next){
-            if((node->val>prev->val && node->val>node->next->val) ||
-             (node->val<prev->val && node->val<node->next->val)){
-                arr.push_back(cnt);
-             }
-             cnt++;
-             prev=node;
-             node=node->next;
+        int ind=1;
+
+        while(node){
+            if(node->next){
+                int amt=node->val;
+                int nxt=node->next->val;
+                int prv=prev->val;
+
+                if((amt>nxt && amt>prv) || (amt<nxt && amt<prv)){
+                    tmp.push_back(ind);
+                }
+            }
+            ind++;
+            prev=node;
+            node=node->next;
         }
 
-        int mini=1e9;
-        int sz=arr.size();
+        if(tmp.size()<=1) return {-1, -1};
 
-        if(sz<=1) return {-1, -1};
+        int minD=1e9;
 
-        for(int i=1; i<sz; i++){
-            mini=min(mini, arr[i]-arr[i-1]);
+        for(int i=1; i<tmp.size(); i++){
+            minD=min(minD, tmp[i]-tmp[i-1]);
         }
 
-        return {mini, arr[sz-1]-arr[0]};
+        return {minD, tmp[tmp.size()-1]-tmp[0]};
+
     }
 };
